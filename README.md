@@ -34,10 +34,19 @@ return Arrays.<ReactPackage>asList(
 include ':react-native-document-scanner'
 project(':react-native-document-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-document-scanner/android')
 ```
- #### Add this (don't forget)
+#### Add this (don't forget)
 ```java
 include ':openCVLibrary310'
 project(':openCVLibrary310').projectDir = new File(rootProject.projectDir,'../node_modules/react-native-document-scanner/android/openCVLibrary310')
+```
+#### In android/app/build.gradle
+Add the following line to the depencies block
+```
+dependencies {
+    ...
+    + implementation project(':react-native-document-picker')
+    ...
+}
 ```
 #### In android/app/src/main/AndroidManifest.xml
 Change manifest header to avoid "Manifest merger error". After you add `xmlns:tools="http://schemas.android.com/tools"` should look like this:
@@ -52,7 +61,35 @@ Add Camera permissions request:
 ```
 <uses-permission android:name="android.permission.CAMERA" />
 ```
+Add Write permissions request:
+```
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+#### Request Real Time Permissions to user before you call DocumentScanner
+```javascript
+componentDidMount() {
+    if (Platform.OS === 'android') return this.permissions();
+}
+permissions = async () => {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      ]);
 
+      if (
+        granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
+        granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        // call <DocumentScanner/>
+      } else {
+        // call Permission Error
+      }
+    } catch (err) {
+      // call Permission Error
+    }
+  };
+```
 ### Manual capture
 
  - Get the component ref
