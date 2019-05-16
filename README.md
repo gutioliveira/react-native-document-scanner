@@ -28,7 +28,7 @@ return Arrays.<ReactPackage>asList(
 	);
 }
 ```
-#### IMPORTANT - Go to folder app/settings.gradle and add
+#### IMPORTANT - Go to folder android/settings.gradle and add
 
 ```java
 include ':react-native-document-scanner'
@@ -44,7 +44,7 @@ Add the following line to the depencies block
 ```
 dependencies {
     ...
-    + implementation project(':react-native-document-picker')
+    + implementation project(':react-native-document-scanner')
     ...
 }
 ```
